@@ -13,7 +13,7 @@ The browser uses only `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY`. T
 
 ## Supabase setup
 
-1. Run [`supabase/schema.sql`](./supabase/schema.sql) in the Supabase SQL Editor. This creates profiles, reports, RLS policies, the `issue-photos` storage bucket, and photo policies.
+1. Run [`supabase/schema.sql`](./supabase/schema.sql) in the Supabase SQL Editor. This creates profiles, reports, RLS policies, and aligns photo uploads with the existing `civic-report-images` storage bucket.
 2. Enable Email auth in Supabase Authentication.
 3. Create the admin and normal user accounts in Authentication → Users, then set the admin profile role:
 

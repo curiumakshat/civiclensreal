@@ -1,4 +1,4 @@
--- Run this in Supabase SQL Editor. The issue-photos bucket is public-read so
+-- Run this in Supabase SQL Editor. The civic-report-images bucket is public-read so
 -- report evidence can appear in the resident/admin trackers.
 create extension if not exists pgcrypto;
 
@@ -53,10 +53,10 @@ create policy "Authenticated users create reports" on public.reports for insert 
 create policy "Owners update their reports" on public.reports for update using (auth.uid() = user_id);
 create policy "Admins update reports" on public.reports for update using (public.is_admin());
 
-insert into storage.buckets (id, name, public) values ('issue-photos', 'issue-photos', true) on conflict (id) do update set public = true;
-create policy "Public can view issue photos" on storage.objects for select using (bucket_id = 'issue-photos');
-create policy "Users upload their own issue photos" on storage.objects for insert to authenticated with check (bucket_id = 'issue-photos' and (storage.foldername(name))[1] = (select auth.uid()::text));
-create policy "Users delete their own issue photos" on storage.objects for delete to authenticated using (bucket_id = 'issue-photos' and (storage.foldername(name))[1] = (select auth.uid()::text));
+insert into storage.buckets (id, name, public) values ('civic-report-images', 'civic-report-images', true) on conflict (id) do update set public = true;
+create policy "Public can view civic report photos" on storage.objects for select using (bucket_id = 'civic-report-images');
+create policy "Users upload their own civic report photos" on storage.objects for insert to authenticated with check (bucket_id = 'civic-report-images' and (storage.foldername(name))[1] = (select auth.uid()::text));
+create policy "Users delete their own civic report photos" on storage.objects for delete to authenticated using (bucket_id = 'civic-report-images' and (storage.foldername(name))[1] = (select auth.uid()::text));
 
 create or replace function public.handle_new_user() returns trigger language plpgsql security definer set search_path = public as $$
 begin insert into public.profiles (id, display_name) values (new.id, coalesce(new.raw_user_meta_data->>'display_name', split_part(new.email, '@', 1))) on conflict (id) do nothing; return new; end; $$;
