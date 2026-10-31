@@ -8,7 +8,8 @@ const admin = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SECRET
 const create = async (email, password, role) => {
   const { data, error } = await admin.auth.admin.createUser({ email, password, email_confirm: true, user_metadata: { display_name: email.split('@')[0] } });
   if (error && !error.message.toLowerCase().includes('already')) throw error;
-  const id = data?.user?.id;
+  let id = data?.user?.id;
+  if (!id) { const users = await admin.auth.admin.listUsers({ page: 1, perPage: 1000 }); id = users.data.users.find((user) => user.email?.toLowerCase() === email.toLowerCase())?.id; }
   if (id) {
     const { error: profileError } = await admin.from('profiles').upsert({ id, display_name: email.split('@')[0], role });
     if (profileError) throw profileError;
