@@ -18,9 +18,11 @@ create table if not exists public.reports (
   reason text not null default '',
   brief_reason text not null default '',
   description text not null,
+  ward text,
   neighborhood text,
   photo_url text,
   photo_exif jsonb,
+  priority text not null default 'Medium' check (priority in ('Low','Medium','High','Critical')),
   status text not null default 'Submitted' check (status in ('Submitted','In progress','Resolved')),
   votes integer not null default 0,
   created_at timestamptz not null default now()
@@ -31,7 +33,9 @@ alter table public.reports enable row level security;
 
 alter table public.reports add column if not exists reason text not null default '';
 alter table public.reports add column if not exists brief_reason text not null default '';
+alter table public.reports add column if not exists ward text;
 alter table public.reports add column if not exists photo_exif jsonb;
+alter table public.reports add column if not exists priority text not null default 'Medium';
 
 create or replace function public.is_admin() returns boolean language sql security definer set search_path = public stable as $$
   select exists (select 1 from public.profiles where id = auth.uid() and role = 'admin');
