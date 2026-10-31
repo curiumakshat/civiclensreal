@@ -21,7 +21,7 @@ The browser uses only `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY`. T
 update public.profiles set role = 'admin' where id = '<admin-auth-user-uuid>';
 ```
 
-Use strong, unique passwords for both accounts. Credentials are not stored in the repository.
+Or add `ADMIN_EMAIL`, `ADMIN_PASSWORD`, `USER_EMAIL`, and `USER_PASSWORD` to your local `.env` and run `npm run provision-users`. The script uses the server-only secret key, confirms both accounts, and assigns the correct profile roles. Use strong, unique passwords; credentials are not stored in the repository.
 
 ## Environment
 
